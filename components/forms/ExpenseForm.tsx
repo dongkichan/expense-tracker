@@ -3,7 +3,7 @@
 import React, { useState, FormEvent } from 'react';
 import { Expense, ExpenseFormData } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { DollarSign, Tag, Calendar, FileText, Sparkles, Save, X } from 'lucide-react';
+import { Tag, Calendar, FileText, Sparkles, Save, X, PhilippinePeso } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface ExpenseFormProps {
@@ -12,14 +12,14 @@ interface ExpenseFormProps {
   onCancel?: () => void;
 }
 
-const CATEGORIES: Expense['category'][] = ['Food', 'Transportation', 'Entertainment', 'Utilities', 'Healthcare', 'Other'];
+const CATEGORIES: Expense['category'][] = ['Food', 'Transportation', 'Entertainment', 'Shopping', 'Bills', 'Other'];
 
 const CATEGORY_ICONS = {
   Food: '🍽️',
   Transportation: '🚗',
   Entertainment: '🎬',
-  Utilities: '💡',
-  Healthcare: '🏥',
+  Shopping: '🛍️',
+  Bills: '💳',
   Other: '📦',
 };
 
@@ -27,10 +27,120 @@ const CATEGORY_GRADIENTS = {
   Food: 'from-emerald-400 to-emerald-600',
   Transportation: 'from-blue-400 to-blue-600',
   Entertainment: 'from-purple-400 to-purple-600',
-  Utilities: 'from-amber-400 to-amber-600',
-  Healthcare: 'from-red-400 to-red-600',
+  Shopping: 'from-amber-400 to-amber-600',
+  Bills: 'from-red-400 to-red-600',
   Other: 'from-gray-400 to-gray-600',
 };
+
+const FloatingInput = ({ 
+  label, 
+  value, 
+  onChange, 
+  type = 'text', 
+  icon: Icon, 
+  error, 
+  field,
+  step,
+  placeholder,
+  focusedField,
+  setFocusedField
+}: {
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+  icon: React.ElementType;
+  error?: string;
+  field: string;
+  step?: string;
+  placeholder?: string;
+  focusedField: string | null;
+  setFocusedField: (field: string | null) => void;
+}) => (
+  <div className="relative group">
+    <div className="relative">
+      <Icon className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 transition-colors duration-300 ${
+        focusedField === field || value ? 'text-blue-400' : 'text-white/50'
+      }`} />
+      <input
+        type={type}
+        step={step}
+        value={value}
+        onChange={onChange}
+        onFocus={() => setFocusedField(field)}
+        onBlur={() => setFocusedField(null)}
+        placeholder={placeholder || ''}
+        className={`w-full pl-12 pr-4 py-4 glass-card text-white placeholder-white/40
+                   focus:bg-white/20 focus:border-white/40 focus:outline-none 
+                   focus:ring-4 focus:ring-blue-500/30 transition-all duration-300
+                   ${error ? 'border-red-400 focus:ring-red-500/30' : ''}`}
+      />
+      <label className={`absolute left-12 transition-all duration-300 pointer-events-none
+                        ${focusedField === field || value 
+                          ? 'top-2 text-xs text-blue-400 font-medium' 
+                          : 'top-1/2 -translate-y-1/2 text-white/60'}`}>
+        {label}
+      </label>
+    </div>
+    {error && (
+      <div className="mt-2 flex items-center gap-2 text-red-400 text-sm slide-up">
+        <div className="w-2 h-2 rounded-full bg-red-400" />
+        {error}
+      </div>
+    )}
+  </div>
+);
+
+const FloatingTextarea = ({ 
+  label, 
+  value, 
+  onChange, 
+  icon: Icon, 
+  error, 
+  field,
+  focusedField,
+  setFocusedField
+}: {
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  icon: React.ElementType;
+  error?: string;
+  field: string;
+  focusedField: string | null;
+  setFocusedField: (field: string | null) => void;
+}) => (
+  <div className="relative group">
+    <div className="relative">
+      <Icon className={`absolute left-4 top-6 h-5 w-5 transition-colors duration-300 ${
+        focusedField === field || value ? 'text-blue-400' : 'text-white/50'
+      }`} />
+      <textarea
+        value={value}
+        onChange={onChange}
+        onFocus={() => setFocusedField(field)}
+        onBlur={() => setFocusedField(null)}
+        rows={4}
+        className={`w-full pl-12 pr-4 py-4 glass-card text-white placeholder-white/40 resize-none
+                   focus:bg-white/20 focus:border-white/40 focus:outline-none 
+                   focus:ring-4 focus:ring-blue-500/30 transition-all duration-300
+                   ${error ? 'border-red-400 focus:ring-red-500/30' : ''}`}
+      />
+      <label className={`absolute left-12 transition-all duration-300 pointer-events-none
+                        ${focusedField === field || value 
+                          ? 'top-2 text-xs text-blue-400 font-medium' 
+                          : 'top-6 text-white/60'}`}>
+        {label}
+      </label>
+    </div>
+    {error && (
+      <div className="mt-2 flex items-center gap-2 text-red-400 text-sm slide-up">
+        <div className="w-2 h-2 rounded-full bg-red-400" />
+        {error}
+      </div>
+    )}
+  </div>
+);
 
 export function ExpenseForm({ onSubmit, initialData, onCancel }: ExpenseFormProps) {
   const [formData, setFormData] = useState<ExpenseFormData>({
@@ -100,108 +210,6 @@ export function ExpenseForm({ onSubmit, initialData, onCancel }: ExpenseFormProp
     }
   };
 
-  const FloatingInput = ({ 
-    label, 
-    value, 
-    onChange, 
-    type = 'text', 
-    icon: Icon, 
-    error, 
-    field,
-    step,
-    placeholder
-  }: {
-    label: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    type?: string;
-    icon: React.ElementType;
-    error?: string;
-    field: string;
-    step?: string;
-    placeholder?: string;
-  }) => (
-    <div className="relative group">
-      <div className="relative">
-        <Icon className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 transition-colors duration-300 ${
-          focusedField === field || value ? 'text-blue-400' : 'text-white/50'
-        }`} />
-        <input
-          type={type}
-          step={step}
-          value={value}
-          onChange={onChange}
-          onFocus={() => setFocusedField(field)}
-          onBlur={() => setFocusedField(null)}
-          placeholder={placeholder}
-          className={`w-full pl-12 pr-4 py-4 glass-card text-white placeholder-transparent
-                     focus:bg-white/20 focus:border-white/40 focus:outline-none 
-                     focus:ring-4 focus:ring-blue-500/30 transition-all duration-300
-                     ${error ? 'border-red-400 focus:ring-red-500/30' : ''}`}
-        />
-        <label className={`absolute left-12 transition-all duration-300 pointer-events-none
-                          ${focusedField === field || value 
-                            ? 'top-2 text-xs text-blue-400 font-medium' 
-                            : 'top-1/2 -translate-y-1/2 text-white/60'}`}>
-          {label}
-        </label>
-      </div>
-      {error && (
-        <div className="mt-2 flex items-center gap-2 text-red-400 text-sm slide-up">
-          <div className="w-2 h-2 rounded-full bg-red-400" />
-          {error}
-        </div>
-      )}
-    </div>
-  );
-
-  const FloatingTextarea = ({ 
-    label, 
-    value, 
-    onChange, 
-    icon: Icon, 
-    error, 
-    field 
-  }: {
-    label: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    icon: React.ElementType;
-    error?: string;
-    field: string;
-  }) => (
-    <div className="relative group">
-      <div className="relative">
-        <Icon className={`absolute left-4 top-6 h-5 w-5 transition-colors duration-300 ${
-          focusedField === field || value ? 'text-blue-400' : 'text-white/50'
-        }`} />
-        <textarea
-          value={value}
-          onChange={onChange}
-          onFocus={() => setFocusedField(field)}
-          onBlur={() => setFocusedField(null)}
-          rows={4}
-          className={`w-full pl-12 pr-4 py-4 glass-card text-white placeholder-transparent resize-none
-                     focus:bg-white/20 focus:border-white/40 focus:outline-none 
-                     focus:ring-4 focus:ring-blue-500/30 transition-all duration-300
-                     ${error ? 'border-red-400 focus:ring-red-500/30' : ''}`}
-        />
-        <label className={`absolute left-12 transition-all duration-300 pointer-events-none
-                          ${focusedField === field || value 
-                            ? 'top-2 text-xs text-blue-400 font-medium' 
-                            : 'top-6 text-white/60'}`}>
-          {label}
-        </label>
-      </div>
-      {error && (
-        <div className="mt-2 flex items-center gap-2 text-red-400 text-sm slide-up">
-          <div className="w-2 h-2 rounded-full bg-red-400" />
-          {error}
-        </div>
-      )}
-    </div>
-  );
-
   return (
     <div className="max-w-2xl mx-auto">
       {/* Header */}
@@ -228,11 +236,12 @@ export function ExpenseForm({ onSubmit, initialData, onCancel }: ExpenseFormProp
           value={formData.amount}
           onChange={handleChange('amount')}
           type="number"
-          step="0.01"
-          icon={DollarSign}
+          step="1"
+          icon={PhilippinePeso}
           error={errors.amount}
           field="amount"
-          placeholder="0.00"
+          focusedField={focusedField}
+          setFocusedField={setFocusedField}
         />
 
         {/* Category Selection */}
@@ -268,6 +277,8 @@ export function ExpenseForm({ onSubmit, initialData, onCancel }: ExpenseFormProp
           icon={FileText}
           error={errors.description}
           field="description"
+          focusedField={focusedField}
+          setFocusedField={setFocusedField}
         />
 
         {/* Date */}
@@ -279,6 +290,8 @@ export function ExpenseForm({ onSubmit, initialData, onCancel }: ExpenseFormProp
           icon={Calendar}
           error={errors.date}
           field="date"
+          focusedField={focusedField}
+          setFocusedField={setFocusedField}
         />
 
         {/* Action Buttons */}

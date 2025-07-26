@@ -25,7 +25,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       
       gradient: 'bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transform transition-all duration-300 border border-white/20',
       
-      floating: 'fixed bottom-8 right-8 z-50 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-2xl hover:shadow-3xl hover:scale-110 w-16 h-16 rounded-full border border-white/20 pulse-glow',
+      floating: 'floating-action-btn bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-2xl hover:shadow-3xl hover:scale-110 w-16 h-16 rounded-full border border-white/20 pulse-glow',
     };
     
     const sizes = {

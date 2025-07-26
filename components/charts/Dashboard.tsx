@@ -28,8 +28,8 @@ const COLORS = {
   Food: '#10b981',
   Transportation: '#3b82f6',
   Entertainment: '#8b5cf6',
-  Utilities: '#f59e0b',
-  Healthcare: '#ef4444',
+  Shopping: '#f59e0b',
+  Bills: '#ef4444',
   Other: '#6b7280',
 };
 
@@ -37,18 +37,18 @@ const GRADIENT_COLORS = {
   Food: 'from-emerald-400 to-emerald-600',
   Transportation: 'from-blue-400 to-blue-600',
   Entertainment: 'from-purple-400 to-purple-600',
-  Utilities: 'from-amber-400 to-amber-600',
-  Healthcare: 'from-red-400 to-red-600',
+  Shopping: 'from-amber-400 to-amber-600',
+  Bills: 'from-red-400 to-red-600',
   Other: 'from-gray-400 to-gray-600',
 };
 
 export function Dashboard({ stats }: DashboardProps) {
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-PH', {
       style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      currency: 'PHP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(amount);
   };
 
@@ -71,7 +71,8 @@ export function Dashboard({ stats }: DashboardProps) {
     icon: Icon, 
     gradient, 
     delay = 0,
-    trend 
+    trend,
+    showTrend = false
   }: {
     title: string;
     value: string;
@@ -80,6 +81,7 @@ export function Dashboard({ stats }: DashboardProps) {
     gradient: string;
     delay?: number;
     trend?: 'up' | 'down' | 'neutral';
+    showTrend?: boolean;
   }) => (
     <div className={`glass-card-hover p-8 slide-up floating-animation`} 
          style={{ animationDelay: `${delay}ms` }}>
@@ -87,7 +89,7 @@ export function Dashboard({ stats }: DashboardProps) {
         <div className={`p-4 rounded-2xl bg-gradient-to-r ${gradient} shadow-glow`}>
           <Icon className="h-8 w-8 text-white" />
         </div>
-        {trend === 'up' && (
+        {trend === 'up' && showTrend && (
           <div className="flex items-center text-emerald-400 text-sm font-medium">
             <ArrowUp className="h-4 w-4 mr-1" />
             +12%
@@ -134,6 +136,7 @@ export function Dashboard({ stats }: DashboardProps) {
           gradient="from-blue-500 to-purple-600"
           delay={0}
           trend="up"
+          showTrend={stats.totalExpenses > 0}
         />
         
         <StatCard
@@ -144,6 +147,7 @@ export function Dashboard({ stats }: DashboardProps) {
           gradient="from-emerald-500 to-teal-600"
           delay={100}
           trend="up"
+          showTrend={stats.monthlyAverage > 0}
         />
         
         <StatCard
@@ -164,6 +168,7 @@ export function Dashboard({ stats }: DashboardProps) {
           gradient="from-amber-500 to-orange-600"
           delay={300}
           trend="up"
+          showTrend={stats.categoryBreakdown.reduce((sum, cat) => sum + cat.count, 0) > 0}
         />
       </div>
 

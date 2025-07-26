@@ -19,7 +19,7 @@ interface ExpenseListProps {
   totalAmount: number;
 }
 
-const CATEGORIES: Array<Expense['category'] | ''> = ['', 'Food', 'Transportation', 'Entertainment', 'Utilities', 'Healthcare', 'Other'];
+const CATEGORIES: Array<Expense['category'] | ''> = ['', 'Food', 'Transportation', 'Entertainment', 'Shopping', 'Bills', 'Other'];
 
 export function ExpenseList({ 
   expenses, 
@@ -74,9 +74,11 @@ export function ExpenseList({
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-PH', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'PHP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(amount);
   };
 
@@ -85,8 +87,8 @@ export function ExpenseList({
       Food: 'bg-green-100 text-green-800',
       Transportation: 'bg-blue-100 text-blue-800',
       Entertainment: 'bg-purple-100 text-purple-800',
-      Utilities: 'bg-yellow-100 text-yellow-800',
-      Healthcare: 'bg-red-100 text-red-800',
+      Shopping: 'bg-yellow-100 text-yellow-800',
+      Bills: 'bg-red-100 text-red-800',
       Other: 'bg-gray-100 text-gray-800',
     };
     return colors[category];

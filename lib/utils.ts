@@ -45,7 +45,7 @@ export function parseCSV(csvText: string): Expense[] | null {
     }
 
     const expenses: Expense[] = [];
-    const validCategories = ['Food', 'Transportation', 'Entertainment', 'Utilities', 'Healthcare', 'Other'];
+    const validCategories = ['Food', 'Transportation', 'Entertainment', 'Shopping', 'Bills', 'Other'];
 
     for (let i = 1; i < lines.length; i++) {
       const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
@@ -76,9 +76,11 @@ export function parseCSV(csvText: string): Expense[] | null {
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-PH', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'PHP',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(amount);
 }
 
