@@ -1,4 +1,4 @@
-# Expense Tracker
+# Modern Expense Tracker
 
 A modern expense tracking application built with Next.js 14, TypeScript, and Tailwind CSS. Designed for tracking expenses in Philippine Peso (PHP).
 
